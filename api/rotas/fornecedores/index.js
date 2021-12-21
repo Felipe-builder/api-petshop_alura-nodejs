@@ -31,7 +31,7 @@ roteador.post('/', async (req , res, proximo) => {
     }
 })
 
-roteador.get('/:idFornecedor', async (req, res) => {
+roteador.get('/:idFornecedor', async (req, res, proximo) => {
     try {
         const id = req.params.idFornecedor
         const fornecedor = new Fornecedor({ id: id })
@@ -45,13 +45,8 @@ roteador.get('/:idFornecedor', async (req, res) => {
             serializador.serializar(fornecedor)
         )
     } catch (erro) {
-        res.status(404)
-        res.send(
-            JSON.stringify({
-                menssagem: erro.message
-            })
-        )
-    }
+        proximo(erro)
+    } 
 })
 
 roteador.put('/:idFornecedor', async (req, res, proximo) => {
