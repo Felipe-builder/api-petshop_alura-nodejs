@@ -13,6 +13,7 @@ app.use(bodyParser.json())
 
 app.use((req, res, proximo) => {
     let formatoRequisitado = req.header('Accept')
+    console.log(formatoRequisitado)
 
     if (formatoRequisitado === '*/*'){
         formatoRequisitado = 'application/json'
