@@ -5,7 +5,8 @@ module.exports = {
         return Modelo.findAll({ 
             where: {
                 fornecedor: idFornecedor
-            }
+            },
+            raw: true
          })
     },
     inserir(dados) {
@@ -33,5 +34,13 @@ module.exports = {
         }
 
         return produto
+    },
+    atualizar(dadosDoProduto, dadosParaAtualizar) {
+        return Modelo.update(
+            dadosParaAtualizar,
+            {
+                where: dadosDoProduto
+            }
+        )
     }
 }

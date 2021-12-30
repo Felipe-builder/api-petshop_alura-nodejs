@@ -1,11 +1,15 @@
 const roteador = require('express').Router({ mergeParams: true })
 const Tabela = require('./TabelaProduto')
 const Produto = require('./Produto')
+const Serializador = require('../../../Serializador').SerializadorProduto
 
 roteador.get('/', async (req, res) => {
-    const produtos = await Tabela.listar(req.fornecedor.id)
+    const produtos = await Tabela.listar(req.fornecedor.id) 
+    const serializador = new Serializador(
+        res.getHeader('Content-Type')
+    )
     res.send(
-        JSON.stringify(produtos)
+        serializador.serializar(produtos)
     )
 })
 
@@ -16,9 +20,12 @@ roteador.post('/', async (req, res, proximo) => {
         const dados = Object.assign({}, corpo, { fornecedor: idFornecedor })
         const produto = new Produto(dados)
         await produto.criar()
+        const serializador = new Serializador(
+            res.getHeader('Content-Type')
+        )
         res.status(201)
         res.send(
-            JSON.stringify(produto)
+            serializador.serializar(produto)
         )
     } catch (erro) {
         proximo(erro)
@@ -49,12 +56,34 @@ roteador.get('/:id', async (req,res, proximo) => {
         } 
        const produto = new Produto(dados)
        await produto.carregar()
+       const serializador = new Serializador(
+           res.getHeader('Content-Type'),
+           ['preco', 'estoque', 'fornecedor', 'dtCriacao', 'dtAtualizacao', 'versao']
+       )
        res.send(
-           JSON.stringify(produto)
+           serializador.serializar(produto)
        )
     } catch(erro) {
         proximo(erro)
     }
+
+    roteador.put('/:id', async (req, res, proximo) => {
+        try {
+            const dados = Object.assign(
+                {},
+                req.body,
+                {
+                    id: req.params.id,
+                    fornecedor: req.fornecedor.id
+                })
+            const produto = new Produto(dados)
+            produto.atualizar()
+            res.status(204)
+            res.end()
+        } catch (erro) {
+            proximo(erro)
+        }
+    })
 })
 
 module.exports = roteador
