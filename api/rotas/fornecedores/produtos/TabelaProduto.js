@@ -18,5 +18,20 @@ module.exports = {
                 fornecedor: idFornecedor
             }
         })
+    },
+    async pegarPorId(idProduto, idFornecedor){
+        const produto = await Modelo.findOne({
+            where: {
+                id: idProduto,
+                fornecedor: idFornecedor
+            },
+            raw: true
+        })
+
+        if(!produto) {
+            throw new Error('Produto não encontrado!')
+        }
+
+        return produto
     }
 }
