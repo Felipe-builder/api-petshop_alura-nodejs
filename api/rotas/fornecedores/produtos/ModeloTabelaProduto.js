@@ -30,7 +30,7 @@ const opcoes = {
     tableName: 'produtos',
     timestamps: true,
     createdAt: 'dtCriacao',
-    updateAt: 'dtAtualizacao',
+    updatedAt: 'dtAtualizacao',
     version: 'versao'
 }
 

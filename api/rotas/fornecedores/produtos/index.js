@@ -23,6 +23,10 @@ roteador.post('/', async (req, res, proximo) => {
         const serializador = new Serializador(
             res.getHeader('Content-Type')
         )
+        res.set('ETag', produto.versao)
+        const timestamp = (new Date(produto.dtAtualizacao)).getTime()
+        res.set('Last-Modified', timestamp)
+        res.set('Location', `/api/fornecedores/${produto.fornecedor}/produtos/${produto.id}`)
         res.status(201)
         res.send(
             serializador.serializar(produto)
@@ -60,6 +64,9 @@ roteador.get('/:id', async (req,res, proximo) => {
            res.getHeader('Content-Type'),
            ['preco', 'estoque', 'fornecedor', 'dtCriacao', 'dtAtualizacao', 'versao']
        )
+       res.set('ETag', produto.versao)
+       const timestamp = (new Date(produto.dtAtualizacao)).getTime()
+       res.set('Last-Modified', timestamp)
        res.send(
            serializador.serializar(produto)
        )
@@ -77,7 +84,12 @@ roteador.get('/:id', async (req,res, proximo) => {
                     fornecedor: req.fornecedor.id
                 })
             const produto = new Produto(dados)
-            produto.atualizar()
+            await produto.atualizar()
+            await produto.carregar()
+            res.set('ETag', produto.versao)
+            const timestamp = (new Date(produto.dtAtualizacao)).getTime()
+            res.set('Last-Modified', timestamp)
+            res.set('Location', `/api/fornecedores/${produto.fornecedor}/produtos/${produto.id}`)
             res.status(204)
             res.end()
         } catch (erro) {
@@ -93,7 +105,11 @@ roteador.get('/:id', async (req,res, proximo) => {
             })
             await produto.carregar()
             produto.estoque = produto.estoque - req.body.quantidade
-            produto.diminuirEstoque()
+            await produto.diminuirEstoque()
+            await produto.carregar()
+            res.set('ETag', produto.versao)
+            const timestamp = (new Date(produto.dtAtualizacao)).getTime()
+            res.setDefaultEncoding('Last-Modified', timestamp)
             res.status(204)
             res.end()
         } catch (erro) {
