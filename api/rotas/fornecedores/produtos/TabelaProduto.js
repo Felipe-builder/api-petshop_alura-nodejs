@@ -3,13 +3,12 @@ const instancia = require('../../../banco-de-dados')
 const NaoEncontrado = require('../../../erros/NaoEncontrado')
 
 module.exports = {
-    listar(idFornecedor) {
+    listar(idFornecedor, criterios = {}) {
+        criterios.fornecedor = idFornecedor
         return Modelo.findAll({ 
-            where: {
-                fornecedor: idFornecedor
-            },
+            where: criterios,
             raw: true
-         })
+        })
     },
     inserir(dados) {
         return Modelo.create(dados)
