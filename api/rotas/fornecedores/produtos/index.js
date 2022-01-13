@@ -21,7 +21,8 @@ roteador.post('/', async (req, res, proximo) => {
         const produto = new Produto(dados)
         await produto.criar()
         const serializador = new Serializador(
-            res.getHeader('Content-Type')
+            res.getHeader('Content-Type'),
+            ['preco', 'estoque', 'fornecedor', 'dtCriacao', 'dtAtualizacao', 'versao']
         )
         res.set('ETag', produto.versao)
         const timestamp = (new Date(produto.dtAtualizacao)).getTime()
@@ -134,6 +135,9 @@ roteador.get('/:id', async (req,res, proximo) => {
             proximo(erro)
         }
     })
+
+    const roteadorReclamacoes = require('./reclamacoes')
+    roteador.use('/:idProduto/reclamacoes', roteadorReclamacoes)
 })
 
 module.exports = roteador
