@@ -11,7 +11,19 @@ class Reclamacao {
         this.versao = versao
     }
 
+    validar() {
+        const campos = ['titulo', 'mensagem']
+
+        campos.forEach((campo) => {
+            const valor = this[campo]
+            if(typeof valor !== 'string' || valor.length === 0){
+                throw new Error(`deu erro no campo '${campo}'`)
+            }
+        })
+    }
+
     async criar(){
+        this.validar()
         const resultado = await Tabela.inserir({
             titulo: this.titulo,
             mensagem: this.mensagem,

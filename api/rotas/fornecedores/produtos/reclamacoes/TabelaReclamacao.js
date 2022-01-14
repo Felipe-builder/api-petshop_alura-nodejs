@@ -5,7 +5,8 @@ module.exports = {
         return Modelo.findAll({
             where: {
                 produto: idProduto
-            }
+            },
+            raw: true
         })
     },
     inserir(dados){
@@ -20,7 +21,7 @@ module.exports = {
         })
     },
     async buscar(idReclamacao, idProduto) {
-        const reclamacao = Modelo.findOne({
+        const reclamacao = await Modelo.findOne({
             where: {
                 id: idReclamacao,
                 produto: idProduto

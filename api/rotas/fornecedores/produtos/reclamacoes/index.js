@@ -1,29 +1,36 @@
 const roteador = require('express').Router({ mergeParams: true })
 const Tabela = require('./TabelaReclamacao')
 const Reclamacao = require('./Reclamacao')
+const Serializador = require('../../../../Serializador').SerializadorReclamacao
 
 roteador.get('/', async (req, res) => {
-    const resultados = await Tabela.listar(req.params.idProduto)
+    const resultados = await Tabela.listar(req.produto.id)
+    const serializador = new Serializador(
+        res.getHeader('Content-Type')   
+    )
     res.send(
-        JSON.stringify(resultados)
+        serializador.serializar(resultados)
     )
 })
 
-roteador.post('/', async (req, res) => {
+roteador.post('/', async (req, res, proximo) => {
     try {
-        const idProduto = req.params.idProduto;
+        const idProduto = req.produto.id;
         const corpo = req.body;
         const dados = Object.assign({}, corpo, { produto: idProduto})
         const reclamacao = new Reclamacao(dados)
         await reclamacao.criar()
         res.status(201)
+        const serializador = new Serializador(
+            res.getHeader('Content-Type'),
+            ['mensagem', 'dtCriacao', 'dtAtualizacao','versao']
+
+        )
         res.send(
-            JSON.stringify(reclamacao)
+            serializador.serializar(reclamacao)
         )
     }catch(erro) {
-        res.send(
-            JSON.stringify(erro)
-        )
+        proximo(erro)
     }
 })
 
@@ -31,7 +38,7 @@ roteador.delete('/:id', async (req, res) => {
     try{
         const dados = {
             id: req.params.id,
-            produto: req.params.idProduto
+            produto: req.produto.id
         }
         const reclamacao = new Reclamacao(dados)
         await reclamacao.apagar()
@@ -44,25 +51,23 @@ roteador.delete('/:id', async (req, res) => {
     }
 })
 
-roteador.get('/:id', async (req, res) => {
+roteador.get('/:id', async (req, res, proximo) => {
     try {
         const dados = {
             id: req.params.id,
-            produto: req.params.idProduto
+            produto: req.produto.id
         }
-        console.log('getPorid')
-        console.log(JSON.stringify(dados))
         const reclamacao = new Reclamacao(dados)
         await reclamacao.carregar()
-        res.status(200)
+        const serializador = new Serializador(
+            res.getHeader('Content-Type'),
+            ['mensagem', 'dtCriacao', 'dtAtualizacao','versao']
+        )
         res.send(
-            JSON.stringify(reclamacao)
+            serializador.serializar(reclamacao)
         )
     } catch (erro) {
-        res.status(404)
-        res.send(
-            JSON.stringify(erro)
-        )
+        proximo(erro)
     }
 })
 

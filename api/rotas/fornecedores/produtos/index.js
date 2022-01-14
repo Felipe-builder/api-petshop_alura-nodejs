@@ -141,6 +141,22 @@ roteador.post('/:id/diminuir-estoque', async (req, res, proximo) => {
 })
 
 const roteadorReclamacoes = require('./reclamacoes')
-roteador.use('/:idProduto/reclamacoes', roteadorReclamacoes)
+
+const verificarProduto = async (req, res, proximo) => {
+    try{
+        const dados = {
+            id: req.params.idProduto,
+            fornecedor: req.fornecedor.id
+        }
+        const produto = new Produto(dados)
+        await produto.carregar()
+        req.produto = produto
+        proximo()
+    }catch(erro) {
+        proximo(erro)
+    }
+}
+
+roteador.use('/:idProduto/reclamacoes', verificarProduto, roteadorReclamacoes)
 
 module.exports = roteador

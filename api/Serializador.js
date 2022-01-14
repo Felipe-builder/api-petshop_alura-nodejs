@@ -100,10 +100,25 @@ class SerializadorProduto extends Serializador {
     }
 }
 
+class SerializadorReclamacao extends Serializador {
+    constructor(contentType, camposExtras) {
+        super()
+        this.contentType = contentType
+        this.camposPublicos = [
+            'id',
+            'titulo',
+            'produto'
+        ].concat(camposExtras || [])
+        this.tagSingular = 'reclamacao'
+        this.tagPlural = 'reclamacoes'
+    }
+}
+
 module.exports = {
     Serializador: Serializador,
     SerializadorFornecedor: SerializadorFornecedor,
     SerializadorProduto: SerializadorProduto,
+    SerializadorReclamacao: SerializadorReclamacao,
     SerializadorErro: SerializadorErro,
     formatosAceitos: ['application/json', 'application/xml']
 }
