@@ -34,7 +34,7 @@ roteador.post('/', async (req, res, proximo) => {
     }
 })
 
-roteador.delete('/:id', async (req, res) => {
+roteador.delete('/:id', async (req, res, proximo) => {
     try{
         const dados = {
             id: req.params.id,
@@ -45,9 +45,7 @@ roteador.delete('/:id', async (req, res) => {
         res.status(204)
         res.end()
     } catch(erro) {
-        res.send(
-            JSON.stringify(erro)
-        )
+        proximo(erro)
     }
 })
 
@@ -71,4 +69,22 @@ roteador.get('/:id', async (req, res, proximo) => {
     }
 })
 
+roteador.put('/:id', async (req, res, proximo) => {
+    try {
+        const dados = Object.assign(
+            {},
+            req.body,
+            {
+                id: req.params.id,
+                produto: req.produto.id
+            }
+        )
+        const reclamacao = new Reclamacao(dados)
+        await reclamacao.atualizar()
+        res.status(204)
+        res.end()
+    } catch (erro) {
+        proximo(erro)
+    }
+})
 module.exports = roteador

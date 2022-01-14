@@ -1,3 +1,5 @@
+const CampoInvalido = require('../../../../erros/CampoInvalido')
+const DadosNaoFornecidos = require('../../../../erros/DadosNaoFornecidos')
 const Tabela = require('./TabelaReclamacao')
 
 class Reclamacao {
@@ -17,7 +19,7 @@ class Reclamacao {
         campos.forEach((campo) => {
             const valor = this[campo]
             if(typeof valor !== 'string' || valor.length === 0){
-                throw new Error(`deu erro no campo '${campo}'`)
+                throw new CampoInvalido(campo)
             }
         })
     }
@@ -47,6 +49,30 @@ class Reclamacao {
         this.dtCriacao = reclamacao.dtCriacao
         this.dtAtualizacao = reclamacao.dtAtualizacao
         this.versao = reclamacao.versao
+    }
+
+    async atualizar() {
+        await Tabela.buscar(this.id, this.produto)
+        const campos = ['titulo', 'mensagem']
+        const dadosParaAtualizar = {}
+
+        campos.forEach(campo => {
+            const valor = this[campo]
+            if(typeof valor === 'string' && valor.length > 0) {
+                dadosParaAtualizar[campo] = valor
+            }
+        })
+
+        if(Object.keys(dadosParaAtualizar).length === 0) {
+            throw new DadosNaoFornecidos()
+        }
+
+        return Tabela.atualizar(
+            {
+                id: this.id,
+                produto: this.produto
+            }, dadosParaAtualizar
+        )
     }
 
 }

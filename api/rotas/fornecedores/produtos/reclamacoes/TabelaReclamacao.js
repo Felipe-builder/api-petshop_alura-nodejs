@@ -1,3 +1,4 @@
+const NaoEncontrado = require('../../../../erros/NaoEncontrado')
 const Modelo = require('./ModeloTabelaReclamacao')
 
 module.exports = {
@@ -29,9 +30,19 @@ module.exports = {
         })
 
         if(!reclamacao) {
-            throw new Error('Reclamação não encontrada!')
+            throw new NaoEncontrado('Reclamação')
         }
 
         return reclamacao
+    },
+    atualizar(dadosDaReclamacao, dadosParaAtualizar) {
+        return Modelo.update(
+            dadosParaAtualizar,
+            {
+                where: dadosDaReclamacao
+            }
+        )
     }
+
+
 }
