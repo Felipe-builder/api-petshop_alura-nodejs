@@ -27,4 +27,43 @@ roteador.post('/', async (req, res) => {
     }
 })
 
+roteador.delete('/:id', async (req, res) => {
+    try{
+        const dados = {
+            id: req.params.id,
+            produto: req.params.idProduto
+        }
+        const reclamacao = new Reclamacao(dados)
+        await reclamacao.apagar()
+        res.status(204)
+        res.end()
+    } catch(erro) {
+        res.send(
+            JSON.stringify(erro)
+        )
+    }
+})
+
+roteador.get('/:id', async (req, res) => {
+    try {
+        const dados = {
+            id: req.params.id,
+            produto: req.params.idProduto
+        }
+        console.log('getPorid')
+        console.log(JSON.stringify(dados))
+        const reclamacao = new Reclamacao(dados)
+        await reclamacao.carregar()
+        res.status(200)
+        res.send(
+            JSON.stringify(reclamacao)
+        )
+    } catch (erro) {
+        res.status(404)
+        res.send(
+            JSON.stringify(erro)
+        )
+    }
+})
+
 module.exports = roteador

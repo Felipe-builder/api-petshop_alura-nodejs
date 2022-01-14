@@ -24,6 +24,19 @@ class Reclamacao {
         this.versao = resultado.versao
     }
 
+    apagar() {
+        return Tabela.remover(this.id, this.produto)
+    }
+
+    async carregar(){
+        const reclamacao = await Tabela.buscar(this.id, this.produto)
+        this.titulo = reclamacao.titulo
+        this.mensagem = reclamacao.mensagem
+        this.dtCriacao = reclamacao.dtCriacao
+        this.dtAtualizacao = reclamacao.dtAtualizacao
+        this.versao = reclamacao.versao
+    }
+
 }
 
 module.exports = Reclamacao
