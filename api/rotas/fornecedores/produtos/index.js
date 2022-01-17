@@ -3,6 +3,13 @@ const Tabela = require('./TabelaProduto')
 const Produto = require('./Produto')
 const Serializador = require('../../../Serializador').SerializadorProduto
 
+roteador.options('/', (req, res) => {
+    res.set('Access-Control-Allow-Methods', 'GET', 'POST',)
+    res.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.status(204)
+    res.end()
+})
+
 roteador.get('/', async (req, res) => {
     const produtos = await Tabela.listar(req.fornecedor.id) 
     const serializador = new Serializador(
@@ -35,6 +42,13 @@ roteador.post('/', async (req, res, proximo) => {
     } catch (erro) {
         proximo(erro)
     }
+})
+
+roteador.options('/:id', (req, res) => {
+    res.set('Access-Control-Allow-Methods', 'GET', 'PUT', 'DELETE')
+    res.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.status(204)
+    res.end()
 })
 
 roteador.delete('/:id', async (req, res, proximo) => {
@@ -111,12 +125,18 @@ roteador.put('/:id', async (req, res, proximo) => {
         res.set('ETag', produto.versao)
         const timestamp = (new Date(produto.dtAtualizacao)).getTime()
         res.set('Last-Modified', timestamp)
-        res.set('Location', `/api/fornecedores/${produto.fornecedor}/produtos/${produto.id}`)
         res.status(204)
         res.end()
     } catch (erro) {
         proximo(erro)
     }
+})
+
+roteador.options('/:id/diminuir-estoque', (req, res) => {
+    res.set('Access-Control-Allow-Methods', 'POST')
+    res.set('Access-Control-Allow-Headers', 'Content-Type')
+    res.status(204)
+    res.end()
 })
 
 roteador.post('/:id/diminuir-estoque', async (req, res, proximo) => {
@@ -132,7 +152,7 @@ roteador.post('/:id/diminuir-estoque', async (req, res, proximo) => {
         await produto.carregar()
         res.set('ETag', produto.versao)
         const timestamp = (new Date(produto.dtAtualizacao)).getTime()
-        // res.setDefaultEncoding('Last-Modified', timestamp)
+        res.set('Last-Modified', timestamp)
         res.status(204)
         res.end()
     } catch (erro) {

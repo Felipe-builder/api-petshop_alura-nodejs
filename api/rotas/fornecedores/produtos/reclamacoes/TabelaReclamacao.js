@@ -26,7 +26,8 @@ module.exports = {
             where: {
                 id: idReclamacao,
                 produto: idProduto
-            }
+            },
+            raw: true
         })
 
         if(!reclamacao) {
