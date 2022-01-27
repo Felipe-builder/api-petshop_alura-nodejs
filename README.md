@@ -10,8 +10,7 @@
 
 <a href="https://nodejs.org/docs/v12.13.0/api/"><img src="https://img.shields.io/badge/nodejs-v12.13.0-green?style=plastic&logo=node.js"/></a><space> <space>
 <a href="https://dev.mysql.com/doc/refman/8.0/en/"><img src="https://img.shields.io/badge/mysql-v8.0.27-yellowgreen?style=plastic&logo=mysql"/></a><space><space> 
-<a href="https://docs.npmjs.com/about-npm"><img src="https://img.shields.io/badge/npm-v8.1.4
--yellowgreen?style=plastic&logo=npm"/></a>
+<a href="https://docs.npmjs.com/about-npm"><img src="https://img.shields.io/badge/npm-v8.1.4-yellow?style=plastic&logo=npm"/></a>
 </div>
 
   <h1 align="center">API - Petshop</h1>
